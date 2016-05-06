@@ -14,7 +14,6 @@ namespace HopfieldNetwork
        public int width;
        public int height;
        public int N;
-       public Boolean marked;
        System.Drawing.Pen pen;
 
         public Rectangle(int N, int x, int y, int width, int height) {

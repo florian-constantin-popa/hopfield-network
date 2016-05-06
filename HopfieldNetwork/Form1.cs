@@ -13,7 +13,7 @@ namespace HopfieldNetwork
     public partial class Form1 : Form
     {
         int N = 10;
-        Double [,] A;
+        int [,] A;
         System.Drawing.Graphics formGraphics;
         public Form1()
         {
@@ -27,12 +27,40 @@ namespace HopfieldNetwork
             Color back = Color.FromKnownColor(KnownColor.Control);
             formGraphics.Clear(back);
             Rectangle rectangle = new Rectangle();
-            A = new Double[10, 10];
+            A = new int[N, N];
             for (int i = 0; i < N; i++)
             {
                 for (int j = 0; j < N; j++)
                 {
                     rectangle.drawRectangle(formGraphics, i * 30, j * 30, 30, 30);
+                    A[i, j] = -1;
+                }
+            }
+        }
+
+        public void WriteMatrixToFile(int[,] A)
+        {
+            using (System.IO.TextWriter tw = new System.IO.StreamWriter(textBox1.Text + ".txt"))
+            {
+                for (int j = 0; j < A.GetLength(0); j++)
+                {
+                    for (int i = 0; i < A.GetLength(1); i++)
+                    {
+                        if (i != 0)
+                        {
+                            tw.Write(" ");
+                        }
+                        if (A[i, j] == 1)
+                        {
+                            tw.Write(" ");
+                            tw.Write(A[i, j]);
+                        }
+                        else
+                        {
+                            tw.Write(A[i, j]);
+                        }
+                    }
+                    tw.WriteLine();
                 }
             }
         }
@@ -46,17 +74,23 @@ namespace HopfieldNetwork
 
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
-            Brush myBrush = Brushes.Black; 
-            for (int i = 0; i < N; i++)
+            Brush[] myBrush = { Brushes.Black, new SolidBrush(Color.FromKnownColor(KnownColor.Control))};
+            for (int i = 1; i <= N; i++)
             {
-                for (int j = 0; j < N; j++)
+                for (int j = 1; j <= N; j++)
                 {
                     if ((e.X > (i - 1) * 30 && e.X < i * 30) && (e.Y > (j - 1) * 30 && e.Y < j * 30))
                     {
-                        A[i,j] = 1;
-                        RectangleF rectangle = new RectangleF((i - 1) * 30, (j - 1) * 30, 30, 30);
-                        formGraphics.FillRectangle(myBrush,rectangle);
-                        
+                       if(A[i-1,j-1] == 1){
+                        A[i-1,j-1] = -1;
+                        RectangleF rectangle = new RectangleF((i - 1) * 30 + 1, (j - 1) * 30 + 1, 29, 29);
+                        formGraphics.FillRectangle(myBrush[1],rectangle);
+                       }else
+                        {
+                        A[i-1,j-1] = 1;
+                        RectangleF rectangle = new RectangleF((i - 1) * 30 + 1, (j - 1) * 30 + 1, 29, 29);
+                        formGraphics.FillRectangle(myBrush[0],rectangle);
+                        }
                     }
             }
                 }
@@ -65,8 +99,19 @@ namespace HopfieldNetwork
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            
             Init();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text == "")
+            {
+                MessageBox.Show("Alegeti un nume pentru caracter!");
+            }
+            else
+            {
+                WriteMatrixToFile(A);
+            }
         }
     }
 }
