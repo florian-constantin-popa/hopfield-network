@@ -44,6 +44,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnergyEventArgs.cs" />
+    <Compile Include="HopfieldNetwork.cs" />
+    <Compile Include="Neuron.cs" />
     <Compile Include="Rectangle.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
