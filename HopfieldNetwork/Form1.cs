@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using HopfieldNeuralNetwork;
 
 namespace HopfieldNetwork
 {
@@ -15,6 +16,7 @@ namespace HopfieldNetwork
         int N = 10;
         int [,] A;
         System.Drawing.Graphics formGraphics;
+        private NeuralNetwork network;
         public Form1()
         {
             InitializeComponent();
@@ -112,6 +114,17 @@ namespace HopfieldNetwork
             {
                 WriteMatrixToFile(A);
             }
+        }
+        
+
+        private void button3_Click(object sender, EventArgs e) //run recognition
+        {
+            
+        }
+
+        private void button4_Click(object sender, EventArgs e) //init network
+        {
+
         }
     }
 }

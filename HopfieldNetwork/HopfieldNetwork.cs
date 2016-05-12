@@ -61,7 +61,7 @@ namespace HopfieldNeuralNetwork
             var neurons = new List<Neuron>();
             for (int i=0;i<matrix.GetLength(0);i++)
                 for (int j = 0; j < matrix.GetLength(1); j++)
-                    neurons.Add(new Neuron(matrix[i, j]));
+                    neurons.Add(new Neuron(matrix[i, j]==0?-1:1));
             return neurons;
 
         }
