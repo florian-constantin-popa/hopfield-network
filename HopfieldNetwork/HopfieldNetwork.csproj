@@ -79,6 +79,19 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Character\0.txt" />
+    <Content Include="Character\1.txt" />
+    <Content Include="Character\2.txt" />
+    <Content Include="Character\3.txt" />
+    <Content Include="Character\4.txt" />
+    <Content Include="Character\5.txt" />
+    <Content Include="Character\6.txt" />
+    <Content Include="Character\7.txt" />
+    <Content Include="Character\8.txt" />
+    <Content Include="Character\9.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

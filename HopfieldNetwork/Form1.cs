@@ -16,7 +16,7 @@ namespace HopfieldNetwork
     {
         int N = 10;
         int [,] A;
-        String path = "../../Characters/";
+        String path = "../../Character/";
         private int _noOfNeurons;
         private int _inputMatrixSize;
         private bool[] _visitedNeurons;
