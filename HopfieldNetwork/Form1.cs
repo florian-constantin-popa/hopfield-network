@@ -33,7 +33,7 @@ namespace HopfieldNetwork
                 for (int j = 0; j < N; j++)
                 {
                     rectangle.drawRectangle(formGraphics, i * 30, j * 30, 30, 30);
-                    A[i, j] = -1;
+                    A[i, j] = 0;
                 }
             }
         }
@@ -82,7 +82,7 @@ namespace HopfieldNetwork
                     if ((e.X > (i - 1) * 30 && e.X < i * 30) && (e.Y > (j - 1) * 30 && e.Y < j * 30))
                     {
                        if(A[i-1,j-1] == 1){
-                        A[i-1,j-1] = -1;
+                        A[i-1,j-1] = 0;
                         RectangleF rectangle = new RectangleF((i - 1) * 30 + 1, (j - 1) * 30 + 1, 29, 29);
                         formGraphics.FillRectangle(myBrush[1],rectangle);
                        }else
