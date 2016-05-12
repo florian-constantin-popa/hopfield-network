@@ -1,124 +1,110 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Text;
+using System.Linq;
 using System.Text;
-using System.Drawing;
+using System.Threading.Tasks;
 
-namespace HopfieldNeuralNetwork
+namespace HopfieldNetwork
 {
-    /// <summary>
-    /// Represents the method that will handle an event that rise when Energy of Hopfield Neural Network changes.
-    /// </summary>
-    /// <param name="sender">The source of the event</param>
-    /// <param name="e">An <typeparamref name="EnergyEventArgs"/> that contains value of Energy</param>
-    public delegate void EnergyChangedHandler(object sender, EnergyEventArgs e);
-
-    /// <summary>
-    /// Defines the class for Hopfield Neural Network
-    /// </summary>
-    public class NeuralNetwork
+    public class HopfieldNetwork
     {
-        public List<Neuron> Neurons { get; set; }
+        private int _noOfNeurons;
+        private int _inputMatrixSize;
+        private bool[] _visitedNeurons;
+        private Random _randomNumber;
+        private double[,] WeightMatrix { get; set; }
+        public int[,] InputMatrix { get; set; }
+        public int[,] OutputMatrix { get; set; }
 
-        public int N { get; set; }
-        private int M { get; set; }
-        private double Energy { get; set; }
-        private int[,] WeightMatrix { get; set; }
 
-        public NeuralNetwork(int n)
+        public HopfieldNetwork(int noOfNeurons, int inputMatrixSize)
         {
-            this.N = n;
-            Neurons = new List<Neuron>(n);
-            for (int i = 0; i < n; i++)
+            _noOfNeurons = noOfNeurons;
+            _inputMatrixSize = noOfNeurons;
+            WeightMatrix = new double[_noOfNeurons, _noOfNeurons];
+            _visitedNeurons = new bool[_noOfNeurons];
+            _randomNumber = new Random();
+
+        }
+
+        public void TrainNetwork(List<int[,]> patternsToLearn)
+        {
+            var noOfPaterns = patternsToLearn.Count;
+            foreach (var pattern in patternsToLearn)
             {
-                Neuron neuron = new Neuron();
-                neuron.State = 0;
-                Neurons.Add(neuron);
-            }
-
-            WeightMatrix = new int[n, n];
-            M = 0;
-
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < n; j++)
+                for (int i = 0; i < _noOfNeurons; i++)
                 {
-                    WeightMatrix[i, j] = 0;
-                }
-        }
-
-        private void CalculateEnergy()
-        {
-            double tempE = 0;
-            for (int i = 0; i < N; i++)
-                for (int j = 0; j < N; j++)
-                    if (i != j)
-                        tempE += WeightMatrix[i, j] * Neurons[i].State * Neurons[j].State;
-            Energy = -1 * tempE / 2;
-        }
-
-
-        public List<Neuron> MatrixToNeuronList(int[,] matrix)
-        {
-            var neurons = new List<Neuron>();
-            for (int i=0;i<matrix.GetLength(0);i++)
-                for (int j = 0; j < matrix.GetLength(1); j++)
-                    neurons.Add(new Neuron(matrix[i, j]==0?-1:1));
-            return neurons;
-
-        }
-
-        public void AddPattern(List<Neuron> pattern)
-        {
-            for (int i = 0; i < N; i++)
-                for (int j = 0; j < N; j++)
-                {
-                    if (i == j) WeightMatrix[i, j] = 0;
-                    else WeightMatrix[i, j] += (pattern[i].State * pattern[j].State);
-                }
-            M++;
-        }
-
-     
-        public void FreeMatrix()
-        {
-            for (int i = 0; i < N; i++)
-                for (int j = 0; j < N; j++)
-                    WeightMatrix[i, j] = 0;
-        }
-
-        public void Run(List<Neuron> initialState)
-        {
-            Neurons = initialState;
-            int k = 1;
-            int h = 0;
-            while (k != 0)
-            {
-                k = 0;
-                for (int i = 0; i < N; i++)
-                {
-                    h = 0;
-                    for (int j = 0; j < N; j++)
-                        h += WeightMatrix[i, j] * (Neurons[j].State);
-
-                    if (Neurons[i].ChangeState(h))
+                    for (int j = 0; j <= i; j++)
                     {
-                        k++;
-                        CalculateEnergy();
-                        OnEnergyChanged(new EnergyEventArgs(Energy, i));
+                        if (i == j)
+                            WeightMatrix[i, j] = 0;
+                        else
+                        {
+                            var wij = 1 / (double)noOfPaterns * pattern[i / _inputMatrixSize, i % _inputMatrixSize] * pattern[j / _inputMatrixSize, j % _inputMatrixSize];
+                            WeightMatrix[i, j] += wij;
+                            WeightMatrix[j, i] += wij;
+                        }
+
                     }
                 }
             }
-            CalculateEnergy();
         }
 
-        /// <summary>
-        /// Occurs when the energy of neural network changes
-        /// </summary>
-        public event EnergyChangedHandler EnergyChanged;
-
-        protected virtual void OnEnergyChanged(EnergyEventArgs e)
+        private void SetOutputAsInput()
         {
-            if (EnergyChanged != null)
-                EnergyChanged(this, e);
+
+            for (int i = 0; i < _noOfNeurons; i++)
+            {
+                for (int j = 0; j < _noOfNeurons; j++)
+                {
+                    OutputMatrix[i, j] = InputMatrix[i, j];
+                }
+            }
         }
+
+        private void CleanVisitedNeuronMatrix()
+        {
+            for (int i = 0; i < _noOfNeurons; i++)
+            {
+                _visitedNeurons[_noOfNeurons] = false;
+            }
+        }
+
+        private int GetRandomUnVisitedNeuron()
+        {
+            int index;
+            do
+            {
+                index = _randomNumber.Next(0, _noOfNeurons);
+            } while (_visitedNeurons[index]);
+            return index;
+        }
+
+
+        public void RunRecognition()
+        {
+            SetOutputAsInput();
+            int noOfChanges = 1000;
+            while (noOfChanges > 0)
+            {
+                noOfChanges = 0;
+                CleanVisitedNeuronMatrix();
+                var neuron = GetRandomUnVisitedNeuron(); //select neuron
+                double neuronOutput = (double)InputMatrix[neuron / _inputMatrixSize, neuron % _inputMatrixSize];
+                for (int i = 0; i < _noOfNeurons; i++)
+                {
+                    neuronOutput += WeightMatrix[neuron, i] * OutputMatrix[i / _inputMatrixSize, i % _inputMatrixSize];
+                }
+                var discreetNeuronOutput = (neuronOutput < 0) ? -1 : 1;
+                if (OutputMatrix[neuron / _inputMatrixSize, neuron % _inputMatrixSize] != discreetNeuronOutput)
+                {
+                    noOfChanges++;
+                    OutputMatrix[neuron / _inputMatrixSize, neuron % _inputMatrixSize] = discreetNeuronOutput;
+                }
+
+            }
+        }
+
     }
 }
