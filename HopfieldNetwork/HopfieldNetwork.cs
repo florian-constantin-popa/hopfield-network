@@ -13,9 +13,9 @@ namespace HopfieldNetwork
         private int _inputMatrixSize;
         private bool[] _visitedNeurons;
         private Random _randomNumber;
-        private double[,] WeightMatrix { get; set; }
-        public int[,] InputMatrix { get; set; }
-        public int[,] OutputMatrix { get; set; }
+        private double[,] WeightMatrix;
+        private int[,] InputMatrix;
+        private int[,] OutputMatrix;
 
 
         public HopfieldNetwork(int noOfNeurons, int inputMatrixSize)
