@@ -36,12 +36,13 @@
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
+            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // drawCharacter
             // 
-            this.drawCharacter.Location = new System.Drawing.Point(442, 12);
+            this.drawCharacter.Location = new System.Drawing.Point(570, 21);
             this.drawCharacter.Name = "drawCharacter";
             this.drawCharacter.Size = new System.Drawing.Size(79, 36);
             this.drawCharacter.TabIndex = 0;
@@ -51,7 +52,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(442, 145);
+            this.button1.Location = new System.Drawing.Point(570, 130);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(79, 23);
             this.button1.TabIndex = 1;
@@ -61,7 +62,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(442, 65);
+            this.button2.Location = new System.Drawing.Point(570, 63);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(79, 35);
             this.button2.TabIndex = 2;
@@ -71,16 +72,16 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(442, 106);
+            this.textBox1.Location = new System.Drawing.Point(570, 104);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(79, 20);
             this.textBox1.TabIndex = 3;
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(442, 281);
+            this.button3.Location = new System.Drawing.Point(570, 311);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(79, 43);
+            this.button3.Size = new System.Drawing.Size(79, 35);
             this.button3.TabIndex = 4;
             this.button3.Text = "Run Recognition";
             this.button3.UseVisualStyleBackColor = true;
@@ -88,9 +89,9 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(442, 235);
+            this.button4.Location = new System.Drawing.Point(469, 204);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(79, 40);
+            this.button4.Size = new System.Drawing.Size(79, 38);
             this.button4.TabIndex = 5;
             this.button4.Text = "Train Network";
             this.button4.UseVisualStyleBackColor = true;
@@ -98,27 +99,59 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(442, 187);
+            this.button5.Location = new System.Drawing.Point(384, 21);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(79, 42);
+            this.button5.Size = new System.Drawing.Size(79, 36);
             this.button5.TabIndex = 6;
             this.button5.Text = "Load Character";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // checkedListBox1
+            // 
+            this.checkedListBox1.FormattingEnabled = true;
+            this.checkedListBox1.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"});
+            this.checkedListBox1.Location = new System.Drawing.Point(570, 189);
+            this.checkedListBox1.Name = "checkedListBox1";
+            this.checkedListBox1.Size = new System.Drawing.Size(79, 64);
+            this.checkedListBox1.TabIndex = 7;
             // 
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(309, 0);
+            this.comboBox1.Items.AddRange(new object[] {
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9"});
+            this.comboBox1.Location = new System.Drawing.Point(469, 30);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(121, 21);
-            this.comboBox1.TabIndex = 7;
+            this.comboBox1.Size = new System.Drawing.Size(79, 21);
+            this.comboBox1.TabIndex = 8;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(541, 348);
+            this.ClientSize = new System.Drawing.Size(661, 358);
             this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.checkedListBox1);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
@@ -145,6 +178,7 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.ComboBox comboBox1;
     }
 }
