@@ -15,7 +15,7 @@ namespace HopfieldNetwork
     public partial class Form1 : Form
     {
         int N = 10;
-        int [,] A;
+        int[,] A;
         String path = "../../Character/";
         private int _noOfNeurons;
         private int _inputMatrixSize;
@@ -28,15 +28,16 @@ namespace HopfieldNetwork
         public Form1()
         {
             InitializeComponent();
-          //  A = new Double[10,10];
+            //  A = new Double[10,10];
             formGraphics = this.CreateGraphics();
-           
+
         }
         public void initHopfieldNetwork(int noOfNeurons, int inputMatrixSize)
         {
             _noOfNeurons = noOfNeurons;
-            _inputMatrixSize = noOfNeurons;
+            _inputMatrixSize = inputMatrixSize;
             WeightMatrix = new double[_noOfNeurons, _noOfNeurons];
+
             _visitedNeurons = new bool[_noOfNeurons];
             _randomNumber = new Random();
         }
@@ -54,7 +55,7 @@ namespace HopfieldNetwork
                             WeightMatrix[i, j] = 0;
                         else
                         {
-                            var wij = 1 / (double)noOfPaterns * pattern[i / _inputMatrixSize, i % _inputMatrixSize] * pattern[j / _inputMatrixSize, j % _inputMatrixSize];
+                            double wij = 1.0 / noOfPaterns * pattern[i / _inputMatrixSize, i % _inputMatrixSize] * pattern[j / _inputMatrixSize, j % _inputMatrixSize];
                             WeightMatrix[i, j] += wij;
                             WeightMatrix[j, i] += wij;
                         }
@@ -66,10 +67,10 @@ namespace HopfieldNetwork
 
         private void SetOutputAsInput()
         {
-
-            for (int i = 0; i < _noOfNeurons; i++)
+            OutputMatrix = new int[_inputMatrixSize, _inputMatrixSize];
+            for (int i = 0; i < _inputMatrixSize; i++)
             {
-                for (int j = 0; j < _noOfNeurons; j++)
+                for (int j = 0; j < _inputMatrixSize; j++)
                 {
                     OutputMatrix[i, j] = InputMatrix[i, j];
                 }
@@ -80,7 +81,7 @@ namespace HopfieldNetwork
         {
             for (int i = 0; i < _noOfNeurons; i++)
             {
-                _visitedNeurons[_noOfNeurons] = false;
+                _visitedNeurons[i] = false;
             }
         }
 
@@ -94,6 +95,16 @@ namespace HopfieldNetwork
             return index;
         }
 
+        private bool allVisited()
+        {
+            for (int i = 0; i < _noOfNeurons; i++)
+            {
+                if (!_visitedNeurons[i])
+                    return false;
+            }
+            return true;
+        }
+
 
         public void RunRecognition()
         {
@@ -103,21 +114,29 @@ namespace HopfieldNetwork
             {
                 noOfChanges = 0;
                 CleanVisitedNeuronMatrix();
-                var neuron = GetRandomUnVisitedNeuron(); //select neuron
-                double neuronOutput = (double)InputMatrix[neuron / _inputMatrixSize, neuron % _inputMatrixSize];
-                for (int i = 0; i < _noOfNeurons; i++)
+
+                for (int neuron = 0; neuron < _noOfNeurons; neuron++) //select neuron
                 {
-                    neuronOutput += WeightMatrix[neuron, i] * OutputMatrix[i / _inputMatrixSize, i % _inputMatrixSize];
+                    double neuronOutput = (double)InputMatrix[neuron / _inputMatrixSize, neuron % _inputMatrixSize];
+
+                    for (int i = 0; i < _noOfNeurons; i++)
+                    {
+                        neuronOutput += WeightMatrix[neuron, i] * OutputMatrix[i / _inputMatrixSize, i % _inputMatrixSize];
+                    }
+                    var discreetNeuronOutput = (neuronOutput < 0) ? -1 : 1;
+                    if (OutputMatrix[neuron / _inputMatrixSize, neuron % _inputMatrixSize] != discreetNeuronOutput)
+                    {
+                        noOfChanges++;
+                        OutputMatrix[neuron / _inputMatrixSize, neuron % _inputMatrixSize] = discreetNeuronOutput;
+                    }
                 }
-                var discreetNeuronOutput = (neuronOutput < 0) ? -1 : 1;
-                if (OutputMatrix[neuron / _inputMatrixSize, neuron % _inputMatrixSize] != discreetNeuronOutput)
-                {
-                    noOfChanges++;
-                    OutputMatrix[neuron / _inputMatrixSize, neuron % _inputMatrixSize] = discreetNeuronOutput;
-                }
+
                 DrawCharacterFromMatrix(OutputMatrix);
-                Thread.Sleep(2000);
+                Thread.Sleep(5000);
+
             }
+            MessageBox.Show("Ai gatat treaba!");
+
         }
 
         public void Init()
@@ -137,7 +156,7 @@ namespace HopfieldNetwork
         }
         public int[,] ReadMatrixFromFile(string character)
         {
-            String input = File.ReadAllText(path + character + ".txt" );
+            String input = File.ReadAllText(path + character + ".txt");
             int i = 0, j = 0;
             int[,] result = new int[N, N];
             foreach (var row in input.Split('\r'))
@@ -147,7 +166,7 @@ namespace HopfieldNetwork
                 {
                     if (col.Trim().Contains('\n') || col.Trim().Length == 0)
                     {
-  
+
                     }
                     else
                     {
@@ -157,7 +176,7 @@ namespace HopfieldNetwork
                 }
                 i++;
             }
-        return result;
+            return result;
         }
         public void DrawCharacterFromMatrix(int[,] A)
         {
@@ -167,13 +186,13 @@ namespace HopfieldNetwork
             {
                 for (int j = 0; j < N; j++)
                 {
-                        if (A[i,j] == 1)
-                        {
-                            RectangleF rectangle = new RectangleF((j) * 30 + 1, (i) * 30 + 1, 29, 29);
-                            formGraphics.FillRectangle(myBrush[0], rectangle);
-                        }
+                    if (A[i, j] == 1)
+                    {
+                        RectangleF rectangle = new RectangleF((j) * 30 + 1, (i) * 30 + 1, 29, 29);
+                        formGraphics.FillRectangle(myBrush[0], rectangle);
                     }
                 }
+            }
         }
         public void WriteMatrixToFile(int[,] A)
         {
@@ -205,32 +224,34 @@ namespace HopfieldNetwork
         private void button1_Click(object sender, EventArgs e)
         {
             Init();
-           // formGraphics.Dispose();
+            // formGraphics.Dispose();
 
         }
 
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
-            Brush[] myBrush = { Brushes.Black, new SolidBrush(Color.FromKnownColor(KnownColor.Control))};
+            Brush[] myBrush = { Brushes.Black, new SolidBrush(Color.FromKnownColor(KnownColor.Control)) };
             for (int i = 1; i <= N; i++)
             {
                 for (int j = 1; j <= N; j++)
                 {
                     if ((e.X > (i - 1) * 30 && e.X < i * 30) && (e.Y > (j - 1) * 30 && e.Y < j * 30))
                     {
-                       if(A[i-1,j-1] == 1){
-                        A[i-1,j-1] = -1;
-                        RectangleF rectangle = new RectangleF((i - 1) * 30 + 1, (j - 1) * 30 + 1, 29, 29);
-                        formGraphics.FillRectangle(myBrush[1],rectangle);
-                       }else
+                        if (A[i - 1, j - 1] == 1)
                         {
-                        A[i-1,j-1] = 1;
-                        RectangleF rectangle = new RectangleF((i - 1) * 30 + 1, (j - 1) * 30 + 1, 29, 29);
-                        formGraphics.FillRectangle(myBrush[0],rectangle);
+                            A[i - 1, j - 1] = -1;
+                            RectangleF rectangle = new RectangleF((i - 1) * 30 + 1, (j - 1) * 30 + 1, 29, 29);
+                            formGraphics.FillRectangle(myBrush[1], rectangle);
+                        }
+                        else
+                        {
+                            A[i - 1, j - 1] = 1;
+                            RectangleF rectangle = new RectangleF((i - 1) * 30 + 1, (j - 1) * 30 + 1, 29, 29);
+                            formGraphics.FillRectangle(myBrush[0], rectangle);
                         }
                     }
-            }
                 }
+            }
 
         }
 
@@ -250,11 +271,20 @@ namespace HopfieldNetwork
                 WriteMatrixToFile(A);
             }
         }
-        
+
 
         private void button3_Click(object sender, EventArgs e) //run recognition
-        {
-            
+        {   InputMatrix= new int[_inputMatrixSize,_inputMatrixSize];
+            for (int i = 0; i < _inputMatrixSize; i++)
+            {
+                
+                for (int j = 0; j < _inputMatrixSize; j++)
+                {
+                    InputMatrix[i, j] = A[i, j];
+                }
+            }
+            //InputMatrix = A;
+            RunRecognition();
         }
 
         private void button4_Click(object sender, EventArgs e) //init network
@@ -265,10 +295,19 @@ namespace HopfieldNetwork
                 System.Collections.Generic.List<int[,]> sablon = new List<int[,]>();
                 foreach (object itemChecked in checkedListBox1.CheckedItems)
                 {
-                    sablon.Add(ReadMatrixFromFile((string)itemChecked));               
+                    sablon.Add(ReadMatrixFromFile((string)itemChecked));
                 }
                 initHopfieldNetwork(100, 10);
                 TrainNetwork(sablon);
+                //test weightmatrix
+                /*var x= new List<double>();
+                for (int i = 0;i<_noOfNeurons;i++)
+                    for (int j = 0; j < _noOfNeurons; j++)
+                    {
+                        x.Add((WeightMatrix[i,j]));
+                    }
+                var p = x.Distinct();*/
+
                 MessageBox.Show("Gata");
             }
             else
@@ -279,9 +318,10 @@ namespace HopfieldNetwork
 
         private void button5_Click(object sender, EventArgs e)
         {
-          
+
             string value = comboBox1.SelectedItem.ToString();
-            DrawCharacterFromMatrix(ReadMatrixFromFile(value));
+            A = ReadMatrixFromFile(value);
+            DrawCharacterFromMatrix(A);
         }
     }
 }
