@@ -178,7 +178,7 @@ namespace HopfieldNetwork
             }
             return result;
         }
-        public void DrawCharacterFromMatrix(int[,] A)
+        public void DrawCharacterFromMatrix(int[,] matrix)
         {
             Init();
             Brush[] myBrush = { Brushes.Black, new SolidBrush(Color.FromKnownColor(KnownColor.Control)) };
@@ -186,7 +186,7 @@ namespace HopfieldNetwork
             {
                 for (int j = 0; j < N; j++)
                 {
-                    if (A[i, j] == 1)
+                    if (matrix[i, j] == 1)
                     {
                         RectangleF rectangle = new RectangleF((j) * 30 + 1, (i) * 30 + 1, 29, 29);
                         formGraphics.FillRectangle(myBrush[0], rectangle);
@@ -194,26 +194,26 @@ namespace HopfieldNetwork
                 }
             }
         }
-        public void WriteMatrixToFile(int[,] A)
+        public void WriteMatrixToFile(int[,] matrix)
         {
             using (System.IO.TextWriter tw = new System.IO.StreamWriter(path + textBox1.Text + ".txt"))
             {
-                for (int j = 0; j < A.GetLength(0); j++)
+                for (int j = 0; j < matrix.GetLength(0); j++)
                 {
-                    for (int i = 0; i < A.GetLength(1); i++)
+                    for (int i = 0; i < matrix.GetLength(1); i++)
                     {
                         if (i != 0)
                         {
                             tw.Write(" ");
                         }
-                        if (A[i, j] == 1)
+                        if (matrix[i, j] == 1)
                         {
                             tw.Write(" ");
-                            tw.Write(A[i, j]);
+                            tw.Write(matrix[i, j]);
                         }
                         else
                         {
-                            tw.Write(A[i, j]);
+                            tw.Write(matrix[i, j]);
                         }
                     }
                     tw.WriteLine();
