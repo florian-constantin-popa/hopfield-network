@@ -49,7 +49,7 @@ namespace HopfieldNetwork
             {
                 for (int i = 0; i < _noOfNeurons; i++)
                 {
-                    for (int j = 0; j <= i; j++)
+                    for (int j = 0; j <= i ; j++)
                     {
                         if (i == j)
                             WeightMatrix[i, j] = 0;
@@ -113,7 +113,7 @@ namespace HopfieldNetwork
             while (noOfChanges > 0)
             {
                 noOfChanges = 0;
-                CleanVisitedNeuronMatrix();
+               // CleanVisitedNeuronMatrix();
 
                 for (int neuron = 0; neuron < _noOfNeurons; neuron++) //select neuron
                 {
@@ -154,6 +154,20 @@ namespace HopfieldNetwork
                 }
             }
         }
+        public void InitGrid()
+        {
+            Color back = Color.FromKnownColor(KnownColor.Control);
+            formGraphics.Clear(back);
+            Rectangle rectangle = new Rectangle();
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    rectangle.drawRectangle(formGraphics, i * 30, j * 30, 30, 30);                   
+                }
+            }
+        }
+
         public int[,] ReadMatrixFromFile(string character)
         {
             String input = File.ReadAllText(path + character + ".txt");
@@ -180,7 +194,7 @@ namespace HopfieldNetwork
         }
         public void DrawCharacterFromMatrix(int[,] matrix)
         {
-            Init();
+            InitGrid();
             Brush[] myBrush = { Brushes.Black, new SolidBrush(Color.FromKnownColor(KnownColor.Control)) };
             for (int i = 0; i < N; i++)
             {
